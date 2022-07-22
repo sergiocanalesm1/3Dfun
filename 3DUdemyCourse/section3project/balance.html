@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <script src="../../three.js-master/build/three.js"></script>
+    </head>
+    <body>
+        <script>
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild( renderer.domElement );
+
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xffffee);
+
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight);
+            camera.position.set( 0,2,100 );
+
+            //plane
+            const geo_plane = new THREE.PlaneGeometry(20,20);
+            const mat_plane = new THREE.MeshBasicMaterial({color:0xf7b757, side:THREE.DoubleSide});
+            const mesh_plane = new THREE.Mesh(geo_plane, mat_plane);
+            mesh_plane.rotation.x = Math.PI/2;
+            scene.add(mesh_plane);
+
+
+            const mat = new THREE.MeshBasicMaterial({color:0xb3b2b1,wireframe:true})
+            
+            //rocks
+            const geo1 = new THREE.DodecahedronGeometry(7,2);
+            const rock1 = new THREE.Mesh(geo1,mat);
+            rock1.position.y = 7;
+            scene.add(rock1);
+
+            const geo2 = new THREE.DodecahedronGeometry(3,3);
+            const rock2 = new THREE.Mesh(geo2,mat);
+            rock2.position.y = 16.5;
+            rock2.position.x = 2.5;
+            scene.add(rock2);
+
+            const geo3 = new THREE.ConeGeometry(2,6);
+            const rock3 = new THREE.Mesh(geo3,mat);
+            rock3.position.y = 16.7;
+            rock3.position.x = -4;
+            rock3.rotation.z = Math.PI/3;
+            const rock3Axis = new THREE.Vector3(0,Math.PI/3,0);
+            scene.add(rock3);
+            
+            const geo4 = new THREE.BoxGeometry(1,6,1);
+            const rock4 = new THREE.Mesh(geo4,mat);
+            const angle = -Math.PI/2.7
+            rock4.position.y = 19.2;
+            rock4.position.x = -0.5;
+            rock4.rotation.z = angle;
+            const rock4Axis = new THREE.Vector3(0,angle,0);
+            scene.add(rock4);
+
+            const geo5 = new THREE.CapsuleGeometry(1,2,3,7);
+            const rock5 = new THREE.Mesh(geo5,mat);
+            rock5.position.y = 19.7;
+            rock5.position.x = -4.5;
+            scene.add(rock5);
+
+            const geo6 = new THREE.IcosahedronGeometry(4,1);
+            const rock6 = new THREE.Mesh(geo6,mat);
+            rock6.position.y = 24;
+            rock6.position.x = -1;
+            rock6.rotation.z = Math.PI/4;
+            scene.add(rock6);
+
+            const geo7 = new THREE.TorusGeometry(6,1,6,20);
+            const rock7 = new THREE.Mesh(geo7,mat);
+            const angle2=Math.PI/4
+            rock7.position.y = 26;
+            rock7.position.x = 4;
+            rock7.rotation.y = Math.PI/2;
+            rock7.rotation.z = Math.PI/4;
+            scene.add(rock7);
+
+            dx = 0.01;
+            function animate() {
+                
+                rock1.rotation.x += dx;
+                rock2.rotation.x -= dx;
+                rock3.rotateOnAxis(rock3Axis,dx);
+                rock4.rotateOnAxis(rock4Axis,dx);
+                rock5.rotation.y += dx;
+                rock6.rotation.x -= dx;
+                rock7.rotation.x -= dx;
+                requestAnimationFrame( animate );
+                renderer.render( scene, camera );
+            }
+
+            animate();
+
+        </script>
+    </body>
+</html>
