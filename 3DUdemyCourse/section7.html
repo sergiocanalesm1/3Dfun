@@ -1,0 +1,95 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
+        <script type="importmap">
+        {
+            "imports": {
+            "three": "https://unpkg.com/three@0.142.0/build/three.module.js"
+            }
+        }
+        </script>
+        <script type="module">
+            import * as THREE from 'three';
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild( renderer.domElement );
+
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xffffee);
+
+            
+
+            const randomInRange = (a,b) => Math.floor(a + Math.random()*(b+1-a));
+
+            //1 light
+            const directionalLight = new THREE.DirectionalLight( 0xffffff );
+            scene.add( directionalLight );
+
+            //2 cubes
+            let material,geometry,mesh,
+                w,h,d,
+                x,y,z;
+            const color = new THREE.Color(0xffffff)
+            //color.setHex( Math.random() * 0xffffff );
+            const whdRange = 50;
+            const xyzRange = 350;
+            for(let i=0; i<100; i++){
+                w = randomInRange(-whdRange, whdRange);
+                h = randomInRange(1, whdRange/2);
+                d = randomInRange(-whdRange, whdRange);
+
+                x = randomInRange(-xyzRange,xyzRange);
+                z = randomInRange(-xyzRange*1.5,xyzRange*1.5);
+
+                geometry = new THREE.BoxGeometry(w,h,d);
+                color.setHex(Math.random()*0xffffff);
+                material = new THREE.MeshPhongMaterial({
+                    color:color,
+                    shininess:100,
+                });
+
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(x,h,z);
+                scene.add(mesh);
+            }
+
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight);
+            camera.position.set( 0,30,700 );
+            const dz = 0.5;
+            const dx = 5;
+
+            const onkeydown = e => {
+                
+                if(e.key === 'ArrowLeft'){
+                    camera.position.x -= dx;
+                }
+                else if(e.key === 'ArrowRight'){
+                    camera.position.x += dx;
+                }
+                else if(e.key === 'ArrowUp'){
+                    camera.position.y += dx;
+                }
+                else if(e.key === 'ArrowDown'){
+                    camera.position.y -= dx;
+                }
+            }
+            document.addEventListener('keydown',onkeydown);
+
+            
+            function animate() {
+
+                camera.position.z -= dz;
+                //camera.updateProjectionMatrix();
+
+                requestAnimationFrame( animate );
+                renderer.render( scene, camera );
+            }
+
+            animate();
+
+        </script>
+    </body>
+</html>

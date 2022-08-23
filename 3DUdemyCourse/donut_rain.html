@@ -1,0 +1,87 @@
+<html>
+    <head>
+        <script src="./three.js-master/build/three.js"></script>
+    </head>
+    <body>
+        <script>
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+            const renderer = new THREE.WebGLRenderer();
+
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild( renderer.domElement );
+
+
+
+            // cube
+            const geometry = new THREE.BoxGeometry( 1,1,1 );
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+            const cube = new THREE.Mesh( geometry, material );
+            //scene.add( cube );
+            scene.background = new THREE.Color(0xffffee)
+            camera.position.z = 30;
+            let dx = 0.01;
+
+            //const axes = new THREE.AxesHelper(5);
+            //scene.add(axes);
+
+            // sphere
+            const sgeometry = new THREE.SphereGeometry( 1, 30, 1 );
+            const smaterial = new THREE.MeshBasicMaterial({
+                color: 0x00ff00,
+                wireframe: true
+            });
+            const sphere = new THREE.Mesh( sgeometry, smaterial );
+            //scene.add( sphere );
+
+            //torus
+            const torus_geometry = new THREE.TorusGeometry(5,1,30,30);
+            const torus_material = new THREE.MeshBasicMaterial({
+                color: 0x00ff00,
+                wireframe: true
+            });
+            const torus = new THREE.Mesh(torus_geometry, torus_material);
+            //scene.add(torus);
+
+            const donuts = [];
+            //y varies, but starts at top of screen and decreases
+            //x, z, color random
+            
+            const dy = 0.05;
+            const l = 10;
+            const random_x = donut => donut.position.x = Math.random()*(2*l) - l;
+            const random_z = donut => donut.position.z = Math.random()*(2*l) - l;
+            
+
+            
+            const spawn = () => {
+                //for( let i=0; i<5; i++ ){
+                    const torus_geometry = new THREE.TorusGeometry(2,1,30,30);
+                    const torus_material = new THREE.MeshBasicMaterial({
+                        color: Math.random()* 0xffffff,
+                        //wireframe: true
+                    });
+                    const torus = new THREE.Mesh(torus_geometry, torus_material);
+                    random_x(torus);
+                    random_z(torus);
+                    torus.position.y = 10;
+                    donuts.push(torus);
+                    scene.add(torus);
+                }
+            //}
+            //color missing, spawing every second missing
+
+            function animate() {
+                if( Math.random() < 0.01 ){
+                    spawn();
+                }
+                donuts.forEach( d => d.position.y -= dy )
+                requestAnimationFrame( animate );
+                renderer.render( scene, camera );
+            }
+
+            animate();
+
+        </script>
+    </body>
+</html>

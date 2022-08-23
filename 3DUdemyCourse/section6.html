@@ -1,0 +1,118 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
+        <script type="importmap">
+        {
+            "imports": {
+            "three": "https://unpkg.com/three@0.142.0/build/three.module.js"
+            }
+        }
+        </script>
+        <script type="module">
+            import * as THREE from 'three';
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild( renderer.domElement );
+
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xffffee);
+
+            
+
+            /*
+            Solution outline
+
+            1) light
+                directional
+                    
+            2) 4x4 blue sphere matrix on x and z
+                material
+                    MeshPhongMaterial( {color:0x0000FF} )
+                geo
+                    THREE.SphereGeometry( r );
+                    r=5
+                logic
+                    double for
+                    delta = 2*r + a little bit
+                        added to x in j
+                        added to y in i
+            3) green sphere
+                    THREE.SphereGeometry( r );
+                    MeshPhongMaterial( {color:0x00FF00} )
+                rotating over center of blue spheres
+                normal should be x axis
+            4) camera following green sphere
+                look at the position vector of green sphere?
+                fov should be bigger than green sphere, should be located short on the z direction
+            */
+
+            //1) light
+            const directionalLight = new THREE.DirectionalLight( 0xffffff );
+            scene.add( directionalLight );
+
+            //2) blue spheres
+            const r = 3;
+            const d = 1;
+            const starting = -(3*r + 2*d);
+            let material = new THREE.MeshPhongMaterial({
+                color:0x0000FF,
+                shininess:80.0
+            })
+
+            let geometry,mesh;
+
+            for(let z=0; z<4; z++){
+                for(let x=0; x<4; x++){
+                    geometry = new THREE.SphereGeometry( r );
+                    mesh = new THREE.Mesh(geometry,material);
+                    mesh.position.set( 
+                        starting + x*2*r + d*x,
+                        0,
+                        starting + z*2*r + d*z
+                    )
+                    scene.add(mesh);
+                }
+            }
+            console.log(material.color)
+
+            //3) green shpere
+            geometry = new THREE.SphereGeometry( r );
+            material = new THREE.MeshPhongMaterial({
+                color:0x00FF00,
+                shininess:80.0
+            })
+            mesh = new THREE.Mesh(geometry,material);
+            const orbitRad = -starting+r;
+            mesh.position.set(0,orbitRad,0);
+            scene.add(mesh);
+
+            //4) camera
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight);
+            camera.position.set( 0,orbitRad,100 );
+
+
+            let theta=0, z, y;
+            function animate() {
+                y = orbitRad * Math.cos(theta);
+                z = orbitRad * Math.sin(theta);
+                theta -= 0.01;
+                
+                mesh.position.y = y;
+                mesh.position.z = z;
+
+                camera.position.y = y;
+                camera.position.z = z + 5*r
+                camera.updateProjectionMatrix();
+
+                requestAnimationFrame( animate );
+                renderer.render( scene, camera );
+            }
+
+            animate();
+
+        </script>
+    </body>
+</html>

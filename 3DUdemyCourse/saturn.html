@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <script src="./three.js-master/build/three.js"></script>
+    </head>
+    <body>
+        <script>
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+            const renderer = new THREE.WebGLRenderer();
+
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild( renderer.domElement );
+            scene.background = new THREE.Color(0x000000);
+            camera.position.z = 10;
+
+            
+            const planet_geometry = new THREE.SphereGeometry(2.5, 30, 30);
+            const planet_material = new THREE.MeshBasicMaterial({ color: 0x6e4d10});
+            const planet = new THREE.Mesh(planet_geometry, planet_material);
+            scene.add(planet);
+            
+
+            const colors = [0xf7c059,0xf5ab22,0xf7b945];
+            const disks = [];
+
+            for( let i=1; i<=3; i++){
+                const disk_geometry = new THREE.TorusGeometry(3+1.5*i,0.7, 2, 50 );
+                const disk_material = new THREE.MeshBasicMaterial({color:colors[i-1]});
+                const disk = new THREE.Mesh(disk_geometry, disk_material);
+                disk.rotation.x = 5;
+                disk.rotation.y = 3;
+                disks.push(disk);
+                scene.add(disk);
+            }
+
+            let y = 0;
+            let dy = 0.02;
+            const lim = 3;
+            function animate() {
+                
+                if( y > lim+1 || y < -lim+3 ){
+                    dy = -dy;
+                }
+                y += dy;
+                planet.position.y = y;
+                disks.forEach( d => d.position.y = y );
+                
+
+                requestAnimationFrame( animate );
+                renderer.render( scene, camera );
+            }
+
+            animate();
+
+        </script>
+    </body>
+</html>

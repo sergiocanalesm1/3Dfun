@@ -154,9 +154,7 @@
             let dx = 0.05
             function animate() {
                 
-                spotLight1.position.x += dx;
                 targetObject1.position.x += dx;
-                spotLight2.position.x -= dx;
                 targetObject2.position.x -= dx;
                 if( Math.abs(targetObject1.position.x) >= 8 ){
                     dx *= -1;
